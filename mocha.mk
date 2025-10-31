@@ -290,13 +290,11 @@ PRODUCT_PACKAGES += \
     power.tn8.rc \
     power.mocha.rc \
     ueventd.tn8.rc \
-    ussrd.conf \
-    init.nvgpu_shims.rc \
-    ussr_setup 
-  
+    init.nvgpu_shims.rc
 
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/initfiles/init.renderer.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.renderer.sh
+    $(LOCAL_PATH)/initfiles/init.renderer.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.renderer.sh \
+    $(LOCAL_PATH)/initfiles/ussr_setup.sh:/system/bin/ussr_setup.sh
 
 # Sensors
 PRODUCT_PACKAGES += \
