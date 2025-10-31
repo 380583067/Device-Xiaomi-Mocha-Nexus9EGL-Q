@@ -63,7 +63,9 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # OMX
 PRODUCT_PROPERTY_OVERRIDES += \
-    persist.media.treble_omx=false
+    persist.media.treble_omx=false \
+    media.stagefright.less-secure=true \
+    media.stagefright.legacyencoder=true
 
 # PBC
 PRODUCT_PROPERTY_OVERRIDES += \
