@@ -216,7 +216,8 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/permissions/com.nvidia.feature.opengl4.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nvidia.feature.opengl4.xml \
     $(LOCAL_PATH)/permissions/com.nvidia.nvsi.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/com.nvidia.nvsi.xml
 
-NV_ANDROID_FRAMEWORK_ENHANCEMENTS := true  
+# Enable nvidia framework enhancements if available
+-include vendor/lineage/product/nvidia.mk
 
 # OMX(SOFTWARE)
 PRODUCT_PROPERTY_OVERRIDES += \
@@ -273,12 +274,12 @@ PRODUCT_CHARACTERISTICS := tablet
 
 # PHS
 PRODUCT_PACKAGES += \
-    nvphsd.tn8.conf
+    nvphsd.conf
 
 # Power
 PRODUCT_PACKAGES += \
     android.hardware.power@1.0-service.mocha \
-    android.hardware.vendor.lineage.power@1.0-impl \
+    vendor.lineage.power@1.0-impl \
     power.tegra
 
 # Ramdisk
