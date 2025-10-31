@@ -172,7 +172,6 @@ PRODUCT_PACKAGES += \
     tegra-kbc.kl \
     Vendor_0955_Product_7210.kl
 
-
 # Keymaster
 PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-impl \
@@ -189,7 +188,15 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.media.omx@1.0-impl \
     android.hardware.media.omx@1.0-service \
-    libstagefrighthw
+    libstagefrighthw \
+    libaacextractor \
+	libamrextractor \
+	libflacextractor \
+	libmkvextractor \
+	libmp3extractor \
+	libmp4extractor \
+	liboggextractor \
+	libwavextractor
 
 PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
