@@ -19,7 +19,7 @@ LOCAL_PATH := device/xiaomi/mocha
 $(call inherit-product-if-exists, vendor/xiaomi/mocha/mocha-vendor.mk)
 $(call inherit-product-if-exists, vendor/xiaomi/mocha/consolemode-blobs.mk)
 
-#API
+# API
 PRODUCT_PACKAGES += $(PRODUCT_PACKAGES_SHIPPING_API_LEVEL_29)
 
 # Audio
@@ -113,7 +113,7 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     XiaomiParts
 
-# fastbootd
+# Fastbootd
 PRODUCT_PACKAGES += \
     fastbootd
 
@@ -214,7 +214,7 @@ PRODUCT_COPY_FILES += \
 
 NV_ANDROID_FRAMEWORK_ENHANCEMENTS := true  
 
-#OMX(SOFTWARE)
+# OMX(SOFTWARE)
 PRODUCT_PROPERTY_OVERRIDES += \
     debug.stagefright.c2-poolmask=0x80000\
     debug.stagefright.ccodec=0
@@ -317,7 +317,8 @@ PRODUCT_COPY_FILES += \
 
 # Thermal
 PRODUCT_PACKAGES += \
-    android.hardware.thermal@1.0-service-nvidia \
+    android.hardware.thermal@1.0-impl \
+    android.hardware.thermal@1.0-service \
     thermalhal.tn8.xml
 
 # TimeKeep
