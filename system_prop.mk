@@ -31,8 +31,6 @@ PRODUCT_PROPERTY_OVERRIDES += \
 
 # Heap sizes (adjusted for 2GB RAM)
 PRODUCT_PROPERTY_OVERRIDES += \
-    dalvik.vm.heapgrowthlimit=192m \
-    dalvik.vm.heapsize=384m \
     dalvik.vm.madvise-random=true
 
 # Compiler and optimization settings
