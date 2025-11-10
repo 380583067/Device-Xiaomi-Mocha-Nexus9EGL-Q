@@ -89,7 +89,7 @@ void vendor_load_properties()
     property_override("dalvik.vm.heaptargetutilization", "0.75");
     property_override("dalvik.vm.heapminfree", heapminfree);
     property_override("dalvik.vm.heapmaxfree", "8m");
-    property_override("ro.product.model", "MiPad");
+    property_override("ro.product.model", "MI PAD");
     property_override("ro.product.device", "mocha");
     property_override("ro.build.product", "mocha");
     property_override("bluetooth.device.default_name", "Xiaomi Pad");
