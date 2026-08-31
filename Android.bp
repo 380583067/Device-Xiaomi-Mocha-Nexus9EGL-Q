@@ -2,6 +2,7 @@ subdirs = [
     "sensors",    
     "hidl",
     "tinyalsa",
-    "health",
+    "init",
     "gatekeeper",
+    "hardware/nvidia",
 ]

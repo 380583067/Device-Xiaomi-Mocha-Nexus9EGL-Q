@@ -16,24 +16,22 @@
 
 LOCAL_PATH := device/xiaomi/mocha
 
+# Vendor Blob
 $(call inherit-product-if-exists, vendor/xiaomi/mocha/mocha-vendor.mk)
 $(call inherit-product-if-exists, vendor/xiaomi/mocha/consolemode-blobs.mk)
 
 # API
 PRODUCT_PACKAGES += $(PRODUCT_PACKAGES_SHIPPING_API_LEVEL_29)
 
-# Audio
+# APEX
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/audio/audio.mocha.xml:system/vendor/etc/audio.mocha.xml \
-    $(LOCAL_PATH)/audio/audio_policy_configuration.xml:system/vendor/etc/audio_policy_configuration.xml \
-    $(LOCAL_PATH)/audio/nvaudio_conf.xml:system/etc/nvaudio_conf.xml \
-    $(LOCAL_PATH)/audio/nvaudio_fx.xml:system/etc/nvaudio_fx.xml  \
-    $(LOCAL_PATH)/audio/audio_effects.xml:system/vendor/etc/audio_effects.xml
+    $(LOCAL_PATH)/configs/ld.config.txt:$(TARGET_COPY_OUT_SYSTEM)/etc/swcodec/ld.config.txt
 
+# Audio
 PRODUCT_PACKAGES += \
     android.hardware.audio@2.0 \
     android.hardware.audio@2.0-impl \
-    android.hardware.soundtrigger@2.1-impl \
+    android.hardware.soundtrigger@2.0-impl \
     android.hardware.audio.effect@2.0-impl \
     audio.a2dp.default \
     audio.usb.default \
@@ -50,13 +48,20 @@ PRODUCT_PACKAGES += \
     tinypcminfo_mocha \
     libtinyalsa \
     xaplay
-	
+
+# Audio configuration
 PRODUCT_COPY_FILES += \
     frameworks/av/services/audiopolicy/config/a2dp_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/a2dp_audio_policy_configuration.xml \
     frameworks/av/services/audiopolicy/config/audio_policy_volumes.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_volumes.xml \
     frameworks/av/services/audiopolicy/config/default_volume_tables.xml:$(TARGET_COPY_OUT_VENDOR)/etc/default_volume_tables.xml \
     frameworks/av/services/audiopolicy/config/r_submix_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/r_submix_audio_policy_configuration.xml \
-    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml
+    frameworks/av/services/audiopolicy/config/usb_audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/usb_audio_policy_configuration.xml \
+    $(LOCAL_PATH)/audio/audio.mocha.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio.mocha.xml \
+    $(LOCAL_PATH)/audio/audio_policy_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_configuration.xml \
+    $(LOCAL_PATH)/audio/audio_policy.conf:system/etc/audio_policy.conf \
+    $(LOCAL_PATH)/audio/nvaudio_conf.xml:system/etc/nvaudio_conf.xml \
+    $(LOCAL_PATH)/audio/nvaudio_fx.xml:system/etc/nvaudio_fx.xml  \
+    $(LOCAL_PATH)/audio/audio_effects.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_effects.xml
 
 PRODUCT_COPY_FILES += \
     frameworks/av/services/audiopolicy/enginedefault/config/example/phone/audio_policy_engine_configuration.xml:$(TARGET_COPY_OUT_VENDOR)/etc/audio_policy_engine_configuration.xml \
@@ -75,26 +80,12 @@ PRODUCT_PACKAGES += \
     android.hardware.bluetooth@1.0-service
 
 # Camera
-#PRODUCT_COPY_FILES += \
-#    $(LOCAL_PATH)/camera/nvcamera.conf:$(TARGET_COPY_OUT_VENDOR)/etc/nvcamera.conf \
-#    $(LOCAL_PATH)/camera/model_frontal.xml:$(TARGET_COPY_OUT_VENDOR)/etc/model_frontal.xml
-
-#PRODUCT_PACKAGES += \
-#    android.hardware.camera.provider@2.4-impl \
-#    camera.device@1.0-impl \
-#    camera.tegra \
-#    libmocha_camera \
-#    libmocha_omx \
-#    libpowerservice_client \
-#    libmocha_libc
-# Camera
-PRODUCT_PACKAGES += \
-    libshim_camera
+PRODUCT_COPY_FILES += \
+    $(LOCAL_PATH)/camera/nvcamera.conf:$(TARGET_COPY_OUT_VENDOR)/etc/nvcamera.conf \
+    $(LOCAL_PATH)/camera/model_frontal.xml:$(TARGET_COPY_OUT_VENDOR)/etc/model_frontal.xml
 
 # Comm Permissions
 PRODUCT_COPY_FILES += \
-    frameworks/native/data/etc/handheld_core_hardware.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/handheld_core_hardware.xml \
-    frameworks/native/data/etc/android.hardware.sensor.proximity.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.sensor.proximity.xml \
     frameworks/native/data/etc/android.software.sip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.xml \
     frameworks/native/data/etc/android.software.sip.voip.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.sip.voip.xml
 
@@ -110,13 +101,14 @@ PRODUCT_PACKAGES += \
 
 # Charging LED
 PRODUCT_COPY_FILES += \
-    device/xiaomi/mocha/initfiles/charger_led.sh:system/bin/charger_led.sh
+    $(LOCAL_PATH)/initfiles/charger_led.sh:system/bin/charger_led.sh
 
 # DRM HAL
 PRODUCT_PACKAGES += \
+    android.hardware.drm@1.0-service \
     android.hardware.drm@1.0-impl \
-    android.hardware.drm@1.0-service 
-    #android.hardware.drm@1.1-service.clearkey
+    android.hardware.drm@1.2-service.clearkey \
+    android.hardware.drm@1.1-service.widevine
 
 # Doze
 PRODUCT_PACKAGES += \
@@ -151,9 +143,13 @@ PRODUCT_PACKAGES += \
     android.hardware.graphics.composer@2.1-impl \
     android.hardware.graphics.mapper@2.0-impl \
     android.hardware.renderscript@1.0-impl \
+
+# Shims
+PRODUCT_PACKAGES += \
     libs \
     libshim_zw \
-    libshim_atomic
+    libshim_atomic \
+    libshim_camera
 
 # Health HAL
 PRODUCT_PACKAGES += \
@@ -172,10 +168,6 @@ PRODUCT_PACKAGES += \
     libhidltransport \
     libhwbinder
 
-# HIDL Manifest
-PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/manifest.xml:system/vendor/manifest.xml
-
 # Key layouts
 PRODUCT_PACKAGES += \
     tegra-kbc.kl \
@@ -186,27 +178,21 @@ PRODUCT_PACKAGES += \
     android.hardware.keymaster@3.0-impl \
     android.hardware.keymaster@3.0-service
 
+PRODUCT_COPY_FILES += \
+    prebuilts/vndk/v27/arm/arch-arm-armv7-a-neon/shared/vndk-core/libprotobuf-cpp-full.so:$(TARGET_COPY_OUT_VENDOR)/lib/libprotobuf-cpp-full-v29.so
+
 # Light
 PRODUCT_PACKAGES += \
-    android.hardware.light@2.0-service.mocha
-
-# LiveDisplay
-   PRODUCT_PACKAGES += vendor.lineage.livedisplay@2.0-service-nvidia
+	android.hardware.light@2.0-impl \
+    android.hardware.light@2.0-service
 
 # Media_omx config
 PRODUCT_PACKAGES += \
     android.hardware.media.omx@1.0-impl \
     android.hardware.media.omx@1.0-service \
-    libstagefrighthw \
-    libaacextractor \
-	libamrextractor \
-	libflacextractor \
-	libmkvextractor \
-	libmp3extractor \
-	libmp4extractor \
-	liboggextractor \
-	libwavextractor
+    libstagefrighthw
 
+# Media nvidia
 PRODUCT_COPY_FILES += \
     frameworks/av/media/libstagefright/data/media_codecs_google_audio.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_audio.xml \
     frameworks/av/media/libstagefright/data/media_codecs_google_video.xml:$(TARGET_COPY_OUT_VENDOR)/etc/media_codecs_google_video.xml \
@@ -216,7 +202,8 @@ PRODUCT_COPY_FILES += \
 
 # Memtrack
 PRODUCT_PACKAGES += \
-    android.hardware.memtrack@1.0-service-nvidia
+	android.hardware.memtrack@1.0-impl \
+    android.hardware.memtrack@1.0-service
 
 # NVIDIA
 PRODUCT_COPY_FILES += \
@@ -236,7 +223,7 @@ PRODUCT_PROPERTY_OVERRIDES += \
 # Overlay
 DEVICE_PACKAGE_OVERLAYS += \
     $(LOCAL_PATH)/overlay 
-            
+
 # Permissions
 PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.audio.low_latency.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.audio.low_latency.xml \
@@ -245,12 +232,8 @@ PRODUCT_COPY_FILES += \
     frameworks/native/data/etc/android.hardware.bluetooth.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth.xml \
     frameworks/native/data/etc/android.hardware.bluetooth_le.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.bluetooth_le.xml \
     frameworks/native/data/etc/android.hardware.camera.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.xml \
-    frameworks/native/data/etc/android.hardware.camera.autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.autofocus.xml \
-    frameworks/native/data/etc/android.hardware.camera.manual_postprocessing.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.manual_postprocessing.xml \
-    frameworks/native/data/etc/android.hardware.camera.manual_sensor.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.manual_sensor.xml \
+    frameworks/native/data/etc/android.hardware.camera.flash-autofocus.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.flash-autofocus.xml \
     frameworks/native/data/etc/android.hardware.camera.front.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.front.xml \
-    frameworks/native/data/etc/android.hardware.camera.full.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.full.xml \
-    frameworks/native/data/etc/android.hardware.camera.raw.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.camera.raw.xml \
     frameworks/native/data/etc/android.hardware.ethernet.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.ethernet.xml \
     frameworks/native/data/etc/android.hardware.faketouch.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.faketouch.xml \
     frameworks/native/data/etc/android.hardware.location.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.location.xml \
@@ -279,6 +262,7 @@ PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/permissions/privapp-permissions-google.xml:system/etc/permissions/privapp-permissions-google.xml \
     $(LOCAL_PATH)/permissions/GoogleExtServices_permissions.xml:system/etc/permissions/GoogleExtServices_permissions.xml
 
+# Product
 PRODUCT_CHARACTERISTICS := tablet
 
 # PHS
@@ -289,8 +273,6 @@ PRODUCT_PACKAGES += \
 PRODUCT_PACKAGES += \
     android.hardware.power@1.0-impl \
     android.hardware.power@1.0-service \
-    android.hardware.power.stats@1.0-service.mock \
-    vendor.lineage.power@1.0
 
 # Ramdisk
 PRODUCT_PACKAGES += \
@@ -306,10 +288,15 @@ PRODUCT_PACKAGES += \
     init.tn8_common.rc \
     init.ussrd.rc \
     power.tn8.rc \
-    power.mocha.rc \
-    ueventd.tn8.rc \
-    init.nvgpu_shims.rc
+    ueventd.tn8.rc
 
+# Permissions
+PRODUCT_COPY_FILES += \
+    frameworks/native/data/etc/android.hardware.usb.accessory.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.accessory.xml \
+    frameworks/native/data/etc/android.hardware.usb.host.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.hardware.usb.host.xml \
+    frameworks/native/data/etc/android.software.app_widgets.xml:$(TARGET_COPY_OUT_VENDOR)/etc/permissions/android.software.app_widgets.xml
+
+# Seccomp
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/initfiles/init.renderer.sh:$(TARGET_COPY_OUT_VENDOR)/bin/init.renderer.sh \
     $(LOCAL_PATH)/initfiles/ussr_setup.sh:/system/bin/ussr_setup.sh
@@ -359,21 +346,17 @@ PRODUCT_PACKAGES += \
 
 # Vendor seccomp policy files for media components:
 PRODUCT_COPY_FILES += \
-    $(LOCAL_PATH)/seccomp/mediacodec.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediacodec.policy \
-    $(LOCAL_PATH)/seccomp/mediaextractor.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediaextractor.policy
-
-# Vendor security patch level
-PRODUCT_PROPERTY_OVERRIDES += \
-    ro.lineage.build.vendor_security_patch=2018-01-05 \
-    ro.vendor.build.security_patch=2018-01-05
+    $(LOCAL_PATH)/seccomp/mediacodec-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediacodec-seccomp.policy \
+    $(LOCAL_PATH)/seccomp/mediaextractor-seccomp.policy:$(TARGET_COPY_OUT_VENDOR)/etc/seccomp_policy/mediaextractor-seccomp.policy
 
 # Wifi
 PRODUCT_COPY_FILES += \
     $(LOCAL_PATH)/wifi/dhcpcd.conf:$(TARGET_COPY_OUT_VENDOR)/etc/dhcpcd/dhcpcd.conf \
-   
+	$(LOCAL_PATH)/wifi/apns-conf.xml:/system/etc/apns-conf.xml
+
 # Wifi (All Shield devices xurrently use broadcom wifi / bluetooth modules)
-#    $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
-#    $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4354/device-bcm.mk)
+    $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/config/config-bcm.mk)
+    $(call inherit-product-if-exists, hardware/broadcom/wlan/bcmdhd/firmware/bcm4354/device-bcm.mk)
 
 PRODUCT_PACKAGES += \
     android.hardware.wifi@1.0-service.legacy \

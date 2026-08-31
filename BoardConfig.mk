@@ -16,11 +16,12 @@
 
 # Path
 LOCAL_PATH := device/xiaomi/mocha
+BOARD_VENDOR := Xiaomi
 
 # Audio
-USE_XML_AUDIO_POLICY_CONF := 1
+USE_XML_AUDIO_POLICY_CONF:= 1
 BOARD_USES_GENERIC_AUDIO := false
-BOARD_USES_ALSA_AUDIO := true
+BOARD_USES_ALSA_AUDIO    := true
 BOARD_USES_TINYHAL_AUDIO := true
 
 # Architecture
@@ -29,7 +30,7 @@ TARGET_CPU_ABI2 := armeabi
 TARGET_ARCH := arm
 TARGET_ARCH_VARIANT := armv7-a-neon
 TARGET_CPU_VARIANT := cortex-a15
-TARGET_USES_GRALLOC1 := true
+TARGET_CPU_SMP := true
 TARGET_NOT_USE_GZIP_RECOVERY_RAMDISK := true
 
 # Binder API
@@ -54,7 +55,10 @@ TARGET_BOOTANIMATION_HALF_RES := true
 # Camera
 #TARGET_HAS_LEGACY_CAMERA_HAL1 := true
 #TARGET_NEEDS_PLATFORM_TEXT_RELOCATIONS := true
-#TARGET_LD_SHIM_LIBS += /system/vendor/lib/hw/camera.tegra.so|/system/vendor/lib/libcamera_shim.so
+
+#TARGET_PROCESS_SDK_VERSION_OVERRIDE := \
+#    /system/bin/mediaserver=22 \
+#    /system/vendor/bin/hw/android.hardware.camera.provider@2.4-service=22
 
 # dexpre-opt
 ifeq ($(HOST_OS),linux)
@@ -66,12 +70,9 @@ ifeq ($(HOST_OS),linux)
 endif
 WITH_DEXPREOPT_BOOT_IMG_AND_SYSTEM_SERVER_ONLY := true
 
-#ELF
+# ELF
 BUILD_BROKEN_PREBUILT_ELF_FILES := true
 LOCAL_CHECK_ELF_FILES := false
-
-# Exclude AudioFX
-TARGET_EXCLUDES_AUDIOFX := true
 
 # FM
 BOARD_HAVE_BCM_FM := false
@@ -87,6 +88,7 @@ TARGET_USES_MKE2FS := true
 TARGET_SCREEN_DENSITY := 326
 
 # Graphics
+TARGET_USES_GRALLOC1 := true
 USE_OPENGL_RENDERER := true
 NUM_FRAMEBUFFER_SURFACE_BUFFERS := 2
 BOARD_DISABLE_TRIPLE_BUFFERED_DISPLAY_SURFACES := true
@@ -111,8 +113,11 @@ EXTENDED_FONT_FOOTPRINT := true
 TARGET_INIT_VENDOR_LIB := libinit_mocha
 TARGET_RECOVERY_DEVICE_MODULES := libinit_mocha
 
+# Vendor Init
+TARGET_LIBINIT_DEFINES_FILE := $(LOCAL_PATH)/init/init_mocha.cpp
+
 # Kernel
-BOARD_KERNEL_CMDLINE := vpr_resize androidboot.selinux=permissive vmalloc=400M
+BOARD_KERNEL_CMDLINE := vpr_resize androidboot.selinux=permissive vmalloc=400M androidboot.hardware=tn8
 BOARD_KERNEL_BASE := 0x10000000
 BOARD_RAMDISK_OFFSET := 0x02000000
 BOARD_KERNEL_PAGESIZE := 2048
@@ -138,8 +143,14 @@ BOARD_FLASH_BLOCK_SIZE := 131072
 # LINEAGEHW
 JAVA_SOURCE_OVERLAYS := org.lineageos.hardware|$(LOCAL_PATH)/lineagehw|**/*.java
 
+# LightHAL
+TARGET_LIGHTHAL_VARIANT := tegra
+
 # Malloc
 MALLOC_SVELTE := true
+
+# OTA mocha
+TARGET_RELEASETOOLS_EXTENSIONS := device/xiaomi/mocha/releasetools
 
 # Offmode Charging
 HEALTHD_ENABLE_TRICOLOR_LED := true
@@ -175,19 +186,13 @@ BOARD_SEPOLICY_DIRS += $(LOCAL_PATH)/sepolicy/mocha \
                       
 # SHIMS
 TARGET_LD_SHIM_LIBS := \
-    /system/vendor/lib/libnvomxadaptor.so|libmocha_omx.so \
-    /system/lib/hw/camera.vendor.tegra.so|libmocha_camera.so \
-    /system/lib/hw/camera.vendor.tegra.so|libmocha_libc.so \
     /system/vendor/lib/hw/hwcomposer.tegra.so|libshim_camera.so \
-    /system/vendor/lib/libnvcap_video.so|libshim_camera.so \
-    /system/vendor/lib/libnvgr.so|libshim_atomic.so \
-    /system/vendor/lib/hw/camera.vendor.tegra.so|libnvomxadaptor_shim.so \
-    /system/vendor/lib/libnvomxadaptor.so|libnvomxadaptor_shim.so 
+    /system/vendor/lib/libnvgr.so|libshim_atomic.so
 
 # ThermalHAL
 TARGET_THERMALHAL_VARIANT := tegra
 
-#WEBGL in WebKit
+# WEBGL in WebKit
 ENABLE_WEBGL := true
 
 # Wifi related defines
@@ -203,9 +208,9 @@ WIFI_DRIVER_FW_PATH_P2P          := "/vendor/firmware/fw_bcmdhd.bin"
 WIFI_DRIVER_FW_PATH_PARAM        := "/sys/module/bcmdhd/parameters/firmware_path"
 #WIFI_DRIVER_MODULE_ARG           := "iface_name=wlan0"
 #WIFI_DRIVER_MODULE_NAME          := "bcmdhd"
-
-# workaround for devices that uses old GPU blobs
-#BOARD_EGL_WORKAROUND_BUG_10194508 := true
                        
 # Zygote whitelist extra paths
-ZYGOTE_WHITELIST_PATH_EXTRA := \"/dev/nvhost-ctrl\",\"/dev/nvmap\",
+ZYGOTE_WHITELIST_PATH_EXTRA := \"/dev/nvhost-ctrl\",\"/dev/nvmap\"
+
+# Security patch level
+VENDOR_SECURITY_PATCH := 2025-04-05
