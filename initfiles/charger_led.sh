@@ -1,6 +1,6 @@
 #!/system/bin/sh
 
-sleep 3
+sleep 1
 
 chmod 0777 /sys/class/leds/red/brightness
 chmod 0777 /sys/class/leds/green/brightness

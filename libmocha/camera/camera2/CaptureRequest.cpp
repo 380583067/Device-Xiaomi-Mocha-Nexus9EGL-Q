@@ -17,7 +17,7 @@
 
 // #define LOG_NDEBUG 0
 #define LOG_TAG "CameraRequest"
-#include <utils/Log.h>
+#include <android/log.h>
 
 #include <camera/camera2/CaptureRequest.h>
 

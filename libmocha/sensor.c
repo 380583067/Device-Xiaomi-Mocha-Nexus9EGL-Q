@@ -13,42 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 #define LOG_TAG "LibHi6210sft[Camera]"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
 #include <pthread.h>
-#include <log/Log.h>
+#include <android/log.h>
 #include <hardware/power.h>
 #include <hardware/hardware.h>
 
-//various funcs we'll need to call, in their mangled form
+#define ALOGV(...)  __android_log_print(ANDROID_LOG_VERBOSE, LOG_TAG, __VA_ARGS__)
+#define ALOGD(...)  __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
+#define ALOGE(...)  __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
 
+//various funcs we'll need to call, in their mangled form
 //android::String8::String8(char const*)
 extern void _ZN7android7String8C1EPKc(void **str8P, const char *str);
-
 //android::String8::~String8()
 extern void _ZN7android7String8D1Ev(void **str8P);
-
 //android::String16::String16(char const*)
 extern void _ZN7android8String16C1EPKc(void **str16P, const char *str);
-
 //android::String16::~String16()
 extern void _ZN7android8String16D1Ev(void **str16P);
-
 //android::SensorManager::~SensorManager()
 extern void _ZN7android13SensorManagerD1Ev(void *sensorMgr);
-
 //android::SensorManager::SensorManager(android::String16 const&)
 extern void _ZN7android13SensorManagerC1ERKNS_8String16E(void *sensorMgr, void **str16P);
-
 //android::SensorManager::createEventQueue(android::String8, int)
 extern void _ZN7android13SensorManager16createEventQueueENS_7String8Ei(void **retVal, void *sensorMgr, void **str8P, int mode);
 
-
 //data exports we must provide for camera library to be happy
-
 /*
  * DATA:     android::Singleton<android::SensorManager>::sLock
  * USE:      INTERPOSE: a mutes that camera lib will insist on accessing
@@ -78,10 +72,8 @@ pthread_mutex_t _ZN7android9SingletonINS_13SensorManagerEE5sLockE = PTHREAD_MUTE
 void* _ZN7android9SingletonINS_13SensorManagerEE9sInstanceE = NULL;
 
 //code exports we provide
-
 //android::SensorManager::SensorManager(void)
 void _ZN7android13SensorManagerC1Ev(void *sensorMgr);
-
 //android::SensorManager::createEventQueue(void)
 void _ZN7android13SensorManager16createEventQueueEv(void **retVal, void *sensorMgr);
 
@@ -101,7 +93,6 @@ void libEvtUnloading(void) __attribute__((destructor));
 void _ZN7android13SensorManagerC1Ev(void *sensorMgr)
 {
     void *string;
-
     _ZN7android8String16C1EPKc(&string, "camera.msm8916");
     _ZN7android13SensorManagerC1ERKNS_8String16E(sensorMgr, &string);
     _ZN7android8String16D1Ev(&string);
@@ -118,7 +109,6 @@ void _ZN7android13SensorManagerC1Ev(void *sensorMgr)
 void _ZN7android13SensorManager16createEventQueueEv(void **retVal, void *sensorMgr)
 {
     void *string;
-
     _ZN7android7String8C1EPKc(&string, "");
     _ZN7android13SensorManager16createEventQueueENS_7String8Ei(retVal, sensorMgr, &string, 0);
     _ZN7android7String8D1Ev(&string);

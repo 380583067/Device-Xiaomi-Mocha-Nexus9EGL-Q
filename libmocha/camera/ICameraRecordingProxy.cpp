@@ -21,7 +21,7 @@
 #include <binder/IMemory.h>
 #include <binder/Parcel.h>
 #include <stdint.h>
-#include <utils/Log.h>
+#include <android/log.h>
 
 namespace android {
 

@@ -17,7 +17,7 @@
 
 //#define LOG_NDEBUG 0
 #define LOG_TAG "ICameraDeviceCallbacks"
-#include <utils/Log.h>
+#include <android/log.h>
 #include <stdint.h>
 #include <sys/types.h>
 
