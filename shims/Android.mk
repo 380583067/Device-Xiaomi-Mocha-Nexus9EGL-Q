@@ -7,7 +7,7 @@ $(PROTOBUF_SYMLINK):
 
 ALL_DEFAULT_INSTALLED_MODULES += $(PROTOBUF_SYMLINK)
 
-## libshim_atomic
+# libshim_atomic
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := atomic.cpp
 LOCAL_MODULE := libshim_atomic
@@ -16,18 +16,22 @@ LOCAL_CFLAGS := -O3 -Wno-unused-variable -Wno-unused-parameter
 LOCAL_PROPRIETARY_MODULE := true
 include $(BUILD_SHARED_LIBRARY)
 
+# libs
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := stdio_vsnprintf.cpp
 LOCAL_C_INCLUDES := \
     bionic/libc \
     bionic/libc/stdio \
     bionic/libc/async_safe/include
+
 LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_MODULE := libs
 LOCAL_MODULE_TAGS := optional
 LOCAL_LDFLAGS_arm += -Wl,--version-script,$(LOCAL_PATH)/stdio_vsnprintf.arm.map
+
 include $(BUILD_SHARED_LIBRARY)
 
+# libshim_zw
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := zygote_whitelist.cpp
 LOCAL_C_INCLUDES := frameworks/base/core/jni \
@@ -38,6 +42,7 @@ endif
 LOCAL_SHARED_LIBRARIES := liblog
 LOCAL_MODULE := libshim_zw
 LOCAL_MODULE_TAGS := optional
+
 include $(BUILD_SHARED_LIBRARY)
 
 # libnvomxadaptor_shim
@@ -50,8 +55,8 @@ LOCAL_MODULE := libnvomxadaptor_shim
 LOCAL_MODULE_TAGS := optional
 include $(BUILD_SHARED_LIBRARY)
 
+# libshim_camera
 include $(CLEAR_VARS)
-
 LOCAL_SRC_FILES := \
     camera_shim.cpp
 
